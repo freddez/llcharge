@@ -10,3 +10,4 @@ strip = true  # Automatically strip symbols from the binary.
 [dependencies]
 serde = { version = "1", features = ["derive"] }
 ureq = { version = "*", features = ["json"] }
+confy = {version = "*"}
