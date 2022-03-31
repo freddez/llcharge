@@ -1,5 +1,7 @@
 const DATA_SIZE: usize = 12 * 60 * 60;
 const SAMPLING_RANGE: usize = 5;
+const RANGE: usize = 10;
+
 pub struct Sample {
     data: [f32; DATA_SIZE],
     index: usize,
@@ -40,5 +42,17 @@ impl Sample {
     }
     pub fn is_ready(&self) -> bool {
         self.ready
+    }
+
+    pub fn range(&self) -> [f32; RANGE] {
+        let mut r = [0.0; RANGE];
+        let mut i = self.index - 1;
+        for n in 0..RANGE {
+            if i - n == 0 {
+                i = DATA_SIZE;
+            }
+            r[n] = self.data[i - n];
+        }
+        r
     }
 }

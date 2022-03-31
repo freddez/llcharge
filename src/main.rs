@@ -1,18 +1,22 @@
-use actix_web::{get, App, HttpServer};
+use actix_web::{get, web, App, HttpServer, Responder, Result};
+use actix_web_static_files::ResourceFiles;
 use once_cell::sync::Lazy;
 use std::process;
 use std::sync::Mutex;
 use std::{thread, time};
+
+include!(concat!(env!("OUT_DIR"), "/generated.rs"));
+
 mod cfg;
 mod input;
 mod sample;
 
 static SAMPLE: Lazy<Mutex<sample::Sample>> = Lazy::new(|| Mutex::new(sample::Sample::default()));
 
-#[get("/")]
-async fn index() -> String {
-    let last_avg = SAMPLE.lock().unwrap().last_avg();
-    format!("average of {last_avg}W")
+#[get("/api")]
+async fn index() -> Result<impl Responder> {
+    let range = SAMPLE.lock().unwrap().range();
+    Ok(web::Json(range))
 }
 
 #[actix_web::main]
@@ -59,8 +63,13 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
-    HttpServer::new(|| App::new().service(index))
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        let generated = generate();
+        App::new()
+            .service(index)
+            .service(ResourceFiles::new("/", generated))
+    })
+    .bind(("127.0.0.1", 7000))?
+    .run()
+    .await
 }

@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/frappe-charts@1.2.4/dist/frappe-charts.min.iife.js"></script>
+  </head>
+  <body>
+    <div id="chart"></div>
+    <button onclick="updateChart()">update</button>
+  </body>
+  <script>
+   function updateChart() {
+       fetch('/api')
+           .then(response => response.json())
+           .then(values => {
+               data.datasets[0].values =values;
+               chart.update(data);
+           })
+   }
+
+   var data = {
+       labels: [
+           "1","2","3","4","5","6","7","8","9","10"
+       ],
+       datasets: [
+           {
+               name: "Output", type: "line",
+               values: [10,9,8,7,6,5,4,3,2,1]
+           }
+       ]
+   }
+
+   const chart = new frappe.Chart("#chart", {
+       title: "Power Output",
+       data: data,
+       type: 'line',
+       height: 250,
+       colors: ['#7cd6fd', '#743ee2']
+   });
+   updateChart();
+  </script>
+</html>

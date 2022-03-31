@@ -9,7 +9,12 @@ strip = true  # Automatically strip symbols from the binary.
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }
+once_cell = "1.10.0"
 ureq = { version = "*", features = ["json"] }
 confy = "*"
 actix-web = "4"
-once_cell = "1.10.0"
+actix-web-static-files = "4.0"
+static-files = "0.2.1"
+
+[build-dependencies]
+static-files = "0.2.1"
