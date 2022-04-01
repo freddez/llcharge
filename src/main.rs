@@ -8,13 +8,12 @@ use std::{thread, time};
 include!(concat!(env!("OUT_DIR"), "/generated.rs"));
 
 mod cfg;
-mod input;
 mod sample;
 
 static SAMPLE: Lazy<Mutex<sample::Sample>> = Lazy::new(|| Mutex::new(sample::Sample::default()));
 
-#[get("/api")]
-async fn index() -> Result<impl Responder> {
+#[get("/api/range/")]
+async fn range() -> Result<impl Responder> {
     let range = SAMPLE.lock().unwrap().range();
     Ok(web::Json(range))
 }
@@ -31,23 +30,11 @@ async fn main() -> std::io::Result<()> {
 
         let initial_pause = time::Duration::from_millis(2000);
         let some_seconds = time::Duration::from_millis(1000);
-        match ureq::get(&cfg.power_on_url).call() {
-            Ok(a) => a,
-            Err(error) => panic!("Problem opening the file: {:?}", error),
-        };
-        println!("Power ON");
+        cfg::power_on(&cfg);
         thread::sleep(initial_pause);
         loop {
             thread::sleep(some_seconds);
-            let message: input::Message = match match ureq::get(&cfg.status_url).call() {
-                Ok(a) => a,
-                Err(error) => panic!("Problem opening the file: {:?}", error),
-            }
-            .into_json()
-            {
-                Ok(a) => a,
-                Err(error) => panic!("Problem opening the file: {:?}", error),
-            };
+            let message = cfg::get_message(&cfg);
             let power = message.get_power();
             SAMPLE.lock().unwrap().insert(power);
             if SAMPLE.lock().unwrap().is_ready() {
@@ -66,7 +53,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         let generated = generate();
         App::new()
-            .service(index)
+            .service(range)
             .service(ResourceFiles::new("/", generated))
     })
     .bind(("127.0.0.1", 7000))?

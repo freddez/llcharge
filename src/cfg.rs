@@ -1,4 +1,6 @@
 use serde::{Deserialize, Serialize};
+// use std::collections::HashMap;
+
 #[derive(Serialize, Deserialize)]
 pub struct Device {
     pub name: String,
@@ -6,6 +8,25 @@ pub struct Device {
     pub min_power: f32,
     pub power_threshold: f32,
 }
+
+// pub struct RunningDevices {
+//     pub devices: HashMap<String, &Device>,
+//     pub threshold: f32,
+// }
+// impl ::std::default::Default for RunningDevices {
+//     fn default() -> Self {
+//         Self {
+//             devices: HashMap::new(),
+//             threshold: -1.0,
+//         }
+//     }
+// }
+// impl RunningDevices {
+//     pub fn device_identified(&self) -> bool {
+//         self.threshold != -1.0
+//     }
+//     pub fn filter_devices(&self, power: f32) {}
+// }
 
 #[derive(Serialize, Deserialize)]
 pub struct MyConfig {
@@ -37,5 +58,40 @@ impl ::std::default::Default for MyConfig {
                 },
             ],
         }
+    }
+}
+
+#[derive(Deserialize)]
+pub struct Meter {
+    power: f32,
+}
+
+#[derive(Deserialize)]
+pub struct Message {
+    meters: Vec<Meter>,
+}
+
+impl Message {
+    pub fn get_power(&self) -> f32 {
+        self.meters[0].power
+    }
+}
+pub fn power_on(config: &MyConfig) {
+    match ureq::get(&config.power_on_url).call() {
+        Ok(a) => a,
+        Err(error) => panic!("Problem activating plug: {:?}", error),
+    };
+    println!("Power ON");
+}
+
+pub fn get_message(config: &MyConfig) -> Message {
+    match match ureq::get(&config.status_url).call() {
+        Ok(a) => a,
+        Err(error) => panic!("Problem calling plug: {:?}", error),
+    }
+    .into_json()
+    {
+        Ok(a) => a,
+        Err(error) => panic!("Problem parsing plug response: {:?}", error),
     }
 }

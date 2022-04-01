@@ -1,6 +1,6 @@
 const DATA_SIZE: usize = 12 * 60 * 60;
 const SAMPLING_RANGE: usize = 5;
-const RANGE: usize = 10;
+const RANGE: usize = 32;
 
 pub struct Sample {
     data: [f32; DATA_SIZE],
@@ -40,6 +40,7 @@ impl Sample {
         }
         sum / range as f32
     }
+
     pub fn is_ready(&self) -> bool {
         self.ready
     }
