@@ -23,14 +23,17 @@ impl RunningDevices {
         }
     }
 
+    pub fn num_candidates(&mut self) -> usize {
+        self.devices.len()
+    }
+
     pub fn threshold_reached(&mut self, config: &MyConfig, power: f32) -> bool {
         if self.threshold == -1.0 {
             self.devices.retain(|i| {
                 let device = &config.devices[*i];
                 power < device.max_power && power > device.min_power
             });
-            let n = self.devices.len();
-            if n == 1 {
+            if self.num_candidates() == 1 {
                 for i in self.devices.iter() {
                     let device = &config.devices[*i];
                     println!("Device {} identified", device.name);
@@ -42,8 +45,6 @@ impl RunningDevices {
                     }
                     self.threshold = device.power_threshold;
                 }
-            } else if n == 0 {
-                panic!("No device matching current power");
             }
         }
         self.threshold != -1.0 && power < self.threshold
@@ -115,6 +116,7 @@ pub fn power_on(config: &MyConfig) {
     };
     println!("Power ON");
 }
+
 pub fn power_off(config: &MyConfig) {
     match ureq::get(&config.power_off_url).call() {
         Ok(a) => a,

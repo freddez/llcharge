@@ -5,6 +5,7 @@ const RANGE: usize = 32;
 pub struct Sample {
     data: [f32; DATA_SIZE],
     index: usize,
+    pub running: bool,
     ready: bool,
 }
 impl Default for Sample {
@@ -12,6 +13,7 @@ impl Default for Sample {
         Sample {
             data: [0.0; DATA_SIZE],
             index: 0,
+            running: true,
             ready: false,
         }
     }
