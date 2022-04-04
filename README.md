@@ -12,5 +12,7 @@
 - [x] Record sample
 - [x] Supports configuration file
 - [x] Web interface with chart display
-- [ ] Multiple devices support
+- [x] Multiple devices support
+- [x] Debug level in config file
+- [ ] Device status in web interface
 - [ ] First Documentation, github publication

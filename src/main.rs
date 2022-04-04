@@ -20,16 +20,17 @@ async fn range() -> Result<impl Responder> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    thread::spawn(|| {
+    thread::spawn(|| -> ! {
         let cfg: cfg::MyConfig = match confy::load("bat-plug") {
             Ok(c) => c,
             Err(error) => panic!("Problem opening the file: {:?}", error),
         };
-
-        let power_threshold = 0.6;
+        let mut device_set = cfg::RunningDevices::default();
+        device_set.init(&cfg);
 
         let initial_pause = time::Duration::from_millis(2000);
         let some_seconds = time::Duration::from_millis(1000);
+        let mut last_avg: f32;
         cfg::power_on(&cfg);
         thread::sleep(initial_pause);
         loop {
@@ -38,14 +39,19 @@ async fn main() -> std::io::Result<()> {
             let power = message.get_power();
             SAMPLE.lock().unwrap().insert(power);
             if SAMPLE.lock().unwrap().is_ready() {
-                println!("{} avg : {}", power, SAMPLE.lock().unwrap().last_avg());
-                if power < power_threshold {
-                    println!("Down to {} watts, Power OFF", { power_threshold });
-                    // ureq::get(&cfg.power_off_url).call()?;
-                    process::exit(1);
+                last_avg = SAMPLE.lock().unwrap().last_avg();
+                println!("{} avg : {}", power, last_avg);
+                if device_set.threshold_reached(&cfg, last_avg) {
+                    println!("Power below {} watts", { device_set.threshold });
+                    if cfg.poweroff_under_threshold {
+                        cfg::power_off(&cfg);
+                        process::exit(1);
+                    }
                 }
             } else {
-                println!("{}", power);
+                if cfg.verbose {
+                    println!("{}", power);
+                }
             }
         }
     });
