@@ -37,20 +37,23 @@ async fn main() -> std::io::Result<()> {
             thread::sleep(some_seconds);
             let message = cfg::get_message(&cfg);
             let power = message.get_power();
-            SAMPLE.lock().unwrap().insert(power);
-            if SAMPLE.lock().unwrap().is_ready() {
-                last_avg = SAMPLE.lock().unwrap().last_avg();
-                println!("{} avg : {}", power, last_avg);
-                if device_set.threshold_reached(&cfg, last_avg) {
-                    println!("Power below {} watts", { device_set.threshold });
-                    if cfg.poweroff_under_threshold {
-                        cfg::power_off(&cfg);
-                        process::exit(1);
+            {
+                let mut sample = SAMPLE.lock().unwrap();
+                sample.insert(power);
+                if sample.is_ready() {
+                    last_avg = sample.last_avg();
+                    println!("{} avg : {}", power, last_avg);
+                    if device_set.threshold_reached(&cfg, last_avg) {
+                        println!("Power below {} watts", { device_set.threshold });
+                        if cfg.poweroff_under_threshold {
+                            cfg::power_off(&cfg);
+                            process::exit(1);
+                        }
                     }
-                }
-            } else {
-                if cfg.verbose {
-                    println!("{}", power);
+                } else {
+                    if cfg.verbose {
+                        println!("{}", power);
+                    }
                 }
             }
         }
