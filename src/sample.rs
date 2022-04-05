@@ -31,16 +31,15 @@ impl Sample {
     }
 
     pub fn last_avg(&self) -> f32 {
-        let mut i = self.index - 1;
+        let mut start = self.index - 1;
         let mut sum = 0.0;
-        let range = SAMPLING_RANGE;
-        for n in 0..range {
-            if i - n == 0 {
-                i = DATA_SIZE;
+        for n in 0..SAMPLING_RANGE {
+            if start - n == 0 {
+                start = DATA_SIZE;
             }
-            sum += self.data[i - n];
+            sum += self.data[start - n];
         }
-        sum / range as f32
+        sum / SAMPLING_RANGE as f32
     }
 
     pub fn is_ready(&self) -> bool {
@@ -49,12 +48,12 @@ impl Sample {
 
     pub fn range(&self) -> [f32; RANGE] {
         let mut r = [0.0; RANGE];
-        let mut i = self.index - 1;
-        for n in 0..RANGE {
-            if i - n == 0 {
-                i = DATA_SIZE;
+        let mut start = self.index - 1;
+        for i in 0..RANGE {
+            if start - i == 0 {
+                start = DATA_SIZE;
             }
-            r[n] = self.data[i - n];
+            r[RANGE - i - 1] = self.data[start - i];
         }
         r
     }

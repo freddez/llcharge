@@ -74,7 +74,7 @@ impl ::std::default::Default for MyConfig {
             status_url: "http://192.168.0.105/status/".into(),
             power_on_url: "http://192.168.0.105/relay/0?turn=on".into(),
             power_off_url: "http://192.168.0.105/relay/0?turn=off".into(),
-            poweroff_under_threshold: false.into(),
+            poweroff_under_threshold: true.into(),
             verbose: true.into(),
             devices: vec![
                 Device {
@@ -85,7 +85,7 @@ impl ::std::default::Default for MyConfig {
                 },
                 Device {
                     name: "OnePlus 5".into(),
-                    max_power: 12.0,
+                    max_power: 20.0,
                     min_power: 3.0,
                     power_threshold: 8.0,
                 },

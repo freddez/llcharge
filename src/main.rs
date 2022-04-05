@@ -18,7 +18,6 @@ fn run(cfg: &cfg::MyConfig) {
 
     let some_seconds = time::Duration::from_millis(5000);
     let mut last_avg: f32;
-    cfg::power_on(&cfg);
     loop {
         thread::sleep(some_seconds);
         let message = cfg::get_message(&cfg);
@@ -34,12 +33,12 @@ fn run(cfg: &cfg::MyConfig) {
                     if cfg.poweroff_under_threshold {
                         cfg::power_off(&cfg);
                         sample.running = false;
-                        break;
+                        return;
                     }
                 } else if device_set.num_candidates() == 0 {
                     println!("Unknown device");
                     sample.running = false;
-                    break;
+                    return;
                 }
             } else {
                 if cfg.verbose {
@@ -70,6 +69,7 @@ async fn main() -> std::io::Result<()> {
             Ok(c) => c,
             Err(error) => panic!("Problem opening the file: {:?}", error),
         };
+        cfg::power_on(&cfg);
         let initial_pause = time::Duration::from_millis(10000);
         loop {
             thread::sleep(initial_pause);

@@ -1,6 +1,10 @@
 # Bat-Plug
 
-> With Shelly Plug,
+Used in conjunction with [Shelly Plug](https://shelly.cloud/products/shelly-plug-s-smart-home-automation-device/), this tool helps to [prolong](https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries) your devices's Lithium based batteries life, by automaticaly stopping charge at a power level threshold (ideally 80%).
+
+## Are my devices compatibles with threshold charging ?
+
+To detect end of charge with a plug, you should have a fast charger, designed to give high power at charge should
 
 ## Usage
 
