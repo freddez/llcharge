@@ -8,6 +8,7 @@ pub struct Sample {
     pub running: bool,
     ready: bool,
 }
+
 impl Default for Sample {
     fn default() -> Self {
         Sample {
@@ -19,6 +20,12 @@ impl Default for Sample {
     }
 }
 impl Sample {
+    pub fn start(&mut self) {
+        self.data = [0.0; DATA_SIZE];
+        self.index = 0;
+        self.running = true;
+        self.ready = false;
+    }
     pub fn insert(&mut self, value: f32) {
         self.data[self.index] = value;
         self.index += 1;
@@ -48,12 +55,18 @@ impl Sample {
 
     pub fn range(&self) -> [f32; RANGE] {
         let mut r = [0.0; RANGE];
-        let mut start = self.index - 1;
+        let mut start: usize;
+        if self.index < RANGE {
+            start = DATA_SIZE - RANGE + self.index;
+        } else {
+            start = self.index - RANGE;
+        }
         for i in 0..RANGE {
-            if start - i == 0 {
-                start = DATA_SIZE;
+            r[i] = self.data[start];
+            start += 1;
+            if start >= DATA_SIZE {
+                start = 0;
             }
-            r[RANGE - i - 1] = self.data[start - i];
         }
         r
     }

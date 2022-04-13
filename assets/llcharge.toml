@@ -1,0 +1,27 @@
+ws_listen_addr = "0.0.0.0"
+ws_port = 7000
+status_url = 'http://192.168.0.105/status/'
+power_on_url = 'http://192.168.0.105/relay/0?turn=on'
+power_off_url = 'http://192.168.0.105/relay/0?turn=off'
+power_off_under_threshold = true
+exit_after_poweroff = false
+power_on_on_startup = false
+verbose = true
+
+[[devices]]
+name = 'Super Soco CPX'
+max_power = 1100.0
+min_power = 650.0
+power_threshold = 700.0
+
+[[devices]]
+name = 'OnePlus 5'
+max_power = 20.0
+min_power = 3.0
+power_threshold = 8.0
+
+[[devices]]
+name = 'Pixel 4'
+max_power = 17.0
+min_power = 8.0
+power_threshold = 10.0

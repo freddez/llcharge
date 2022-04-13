@@ -51,19 +51,23 @@ impl RunningDevices {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct Device {
     pub name: String,
     pub max_power: f32,
     pub min_power: f32,
     pub power_threshold: f32,
 }
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct MyConfig {
+    pub ws_port: u16,
+    pub ws_listen_addr: String,
     pub status_url: String,
     pub power_on_url: String,
     pub power_off_url: String,
-    pub poweroff_under_threshold: bool,
+    pub power_off_under_threshold: bool,
+    pub exit_after_poweroff: bool,
+    pub power_on_on_startup: bool,
     pub verbose: bool,
     pub devices: Vec<Device>,
 }
@@ -71,10 +75,14 @@ pub struct MyConfig {
 impl ::std::default::Default for MyConfig {
     fn default() -> Self {
         Self {
+            ws_port: 7000,
+            ws_listen_addr: "0.0.0.0".into(),
             status_url: "http://192.168.0.105/status/".into(),
             power_on_url: "http://192.168.0.105/relay/0?turn=on".into(),
             power_off_url: "http://192.168.0.105/relay/0?turn=off".into(),
-            poweroff_under_threshold: true.into(),
+            power_off_under_threshold: true.into(),
+            exit_after_poweroff: false.into(),
+            power_on_on_startup: true.into(),
             verbose: true.into(),
             devices: vec![
                 Device {

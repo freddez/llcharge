@@ -1,10 +1,10 @@
 <html>
   <head>
-    <script src="https://unpkg.com/frappe-charts@1.2.4/dist/frappe-charts.min.iife.js"></script>
+    <title>LLCharge</title>
+    <script src="https://unpkg.com/frappe-charts@1.6.1/dist/frappe-charts.min.umd.js"></script>
   </head>
   <body>
     <div id="chart"></div>
-    <button onclick="updateChart()">update</button>
   </body>
   <script>
    function updateChart() {
@@ -16,8 +16,6 @@
            })
    }
 
-
-
    var data = {
        labels: [
            "1","2","3","4","5","6","7","8","9","10",
@@ -28,6 +26,7 @@
        datasets: [
            {
                name: "Output", type: "line",
+               regionFill:1,
                values: [10,9,8,7,6,5,4,3,2,1]
            }
        ]
@@ -40,6 +39,15 @@
        height: 250,
        colors: ['#7cd6fd', '#743ee2']
    });
-   updateChart();
+
+   const timer = ms => new Promise(res => setTimeout(res, ms))
+
+   async function load () {
+       for (var i = 0; i < 3000; i++) {
+           updateChart();
+           await timer(5000);
+       }
+   }
+   load();
   </script>
 </html>

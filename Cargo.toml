@@ -1,20 +1,41 @@
 [package]
-name = "batplug"
-version = "0.1.0"
+name = "llcharge"
+description = "Batteries Saver Plug : Extend your batteries life with your smart plug"
+readme = "README.md"
+version = "0.2.0"
 edition = "2021"
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [profile.release]
 strip = true  # Automatically strip symbols from the binary.
 
 [dependencies]
-serde = { version = "1", features = ["derive"] }
+clap = { version = "3.1.8", features = ["derive"] }
+confy = "0.4.0"
+serde = { version = "1.0.136", features = ["derive"] }
 once_cell = "1.10.0"
-ureq = { version = "*", features = ["json"] }
-confy = "*"
-actix-web = "4"
-actix-web-static-files = "4.0"
-static-files = "0.2.1"
+ureq = { version = "2.4.0", features = ["json"] }
+actix-web = "4.0.1"
+actix-web-static-files = "4.0.0"
+static-files = "0.2.3"
+
+[package.metadata.deb]
+maintainer = "Frédéric de Zorzi <f@idez.net>"
+copyright = "2022, Frédéric de Zorzi."
+extended-description = """\
+Battery charge threshold detection to save batteries life. Designed for fast chargers and Shelly Plug."""
+depends = "$auto"
+section = "utils"
+priority = "optional"
+assets = [
+    ["README.md", "usr/share/doc/llcharge/", "644"],
+    ["chart.png", "usr/share/doc/llcharge/", "644"],
+    ["target/release/llcharge", "usr/bin/", "755"],
+    ["assets/llcharge.toml", "etc/", "644"],
+    ["assets/llcharge.service", "etc/systemd/system/", "644"],
+]
 
 [build-dependencies]
-static-files = "0.2.1"
+static-files = "0.2.3"
+
