@@ -8,7 +8,7 @@ Written in _Rust_, this tool has a small power-memory footprint and can be run a
 
 ## Requirements
 
-- A device/battery shipped with a **fast charger**. These smart chargers modulate power output,
+- A device/battery provided with a **fast charger**. These smart chargers modulate power output,
   depending on battery power level: the power output of fast chargers decreases when
   battery reaches full charge. Your job is to detect that power output threshold to set up
   your devices.
