@@ -1,4 +1,4 @@
-# Long Life Charge (llcharge) : Multi devices batteries charge threshold controller
+# Long Life Charge (llcharge) : Battery threshold controller
 
 Used in conjunction with a [smart plug](https://en.wikipedia.org/wiki/Smart_plug), this tool helps to [prolong](https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries) your batteries' life, by automatically stopping charge at a power level threshold (ideally 80%).
 
