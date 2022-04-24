@@ -66,6 +66,23 @@ With `/etc/systemd/system/llcharge.service`, start llcharge with
 $ sudo systemctl start llcharge.service
 ```
 
+## Usage
+
+### Daemon mode
+
+Keep llcharge launched on one of your local computers, and press the power button on the plug after plugging your battery, until llcharge switch off the plug. You can monitor llcharge by watching syslog.
+
+### Manual launch mode
+
+Apply these settings on llcharge.toml :
+
+```
+power_on_on_startup = true
+exit_after_poweroff = true
+```
+
+Then launch llcharge after plugging your battery.
+
 ## Monitoring
 
 A basic real-time chart is provided to help device setup, on `http://rpi.local:7000/`.
