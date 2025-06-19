@@ -1,3 +1,5 @@
+# This project is inactived in favor of [https://github.com/freddez/eplumber] 
+
 # Long Life Charge (llcharge) : Battery threshold controller
 
 Used in conjunction with a [smart plug](https://en.wikipedia.org/wiki/Smart_plug), this tool helps to [prolong](https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries) your batteries' life, by automatically stopping charge at a power level threshold (ideally 80%).
