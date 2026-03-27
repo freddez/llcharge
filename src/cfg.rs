@@ -27,6 +27,11 @@ impl RunningDevices {
         self.devices.len()
     }
 
+    pub fn one_device(&mut self, config: &MyConfig) -> Device {
+        let i = self.devices.iter().next().unwrap();
+        config.devices[*i].clone()
+    }
+
     pub fn threshold_reached(&mut self, config: &MyConfig, power: f32) -> bool {
         if self.threshold == -1.0 {
             self.devices.retain(|i| {
@@ -134,12 +139,11 @@ pub fn power_off(config: &MyConfig) {
 }
 
 pub fn get_message(config: &MyConfig) -> Message {
-    match match ureq::get(&config.status_url).call() {
+    let response = match ureq::get(&config.status_url).call() {
         Ok(a) => a,
         Err(error) => panic!("Problem calling plug: {:?}", error),
-    }
-    .into_json()
-    {
+    };
+    match response.into_body().read_json() {
         Ok(a) => a,
         Err(error) => panic!("Problem parsing plug response: {:?}", error),
     }

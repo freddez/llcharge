@@ -1,8 +1,11 @@
+use crate::cfg::Device;
+
 const DATA_SIZE: usize = 12 * 60 * 60;
 const SAMPLING_RANGE: usize = 5;
 const RANGE: usize = 32;
 
 pub struct Sample {
+    pub device: Option<Device>,
     data: [f32; DATA_SIZE],
     index: usize,
     pub running: bool,
@@ -12,6 +15,7 @@ pub struct Sample {
 impl Default for Sample {
     fn default() -> Self {
         Sample {
+            device: None,
             data: [0.0; DATA_SIZE],
             index: 0,
             running: true,
@@ -23,6 +27,7 @@ impl Sample {
     pub fn start(&mut self) {
         self.data = [0.0; DATA_SIZE];
         self.index = 0;
+        self.device = None;
         self.running = true;
         self.ready = false;
     }
@@ -70,4 +75,5 @@ impl Sample {
         }
         r
     }
+
 }

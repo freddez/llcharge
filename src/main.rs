@@ -9,7 +9,7 @@ use std::{env, thread, time};
 #[clap(author, version, about, long_about = None)]
 struct Args {
     /// Configuration path
-    #[clap(short = 'c', parse(from_os_str), value_name = "config_path", value_hint = clap::ValueHint::DirPath)]
+    #[clap(short = 'c', value_name = "config_path", value_hint = clap::ValueHint::FilePath)]
     config_path: Option<std::path::PathBuf>,
 }
 
@@ -36,6 +36,14 @@ fn run(cfg: &cfg::MyConfig) {
             if sample.is_ready() {
                 last_avg = sample.last_avg();
                 println!("{}W avg : {}W", power, last_avg);
+                if device_set.num_candidates() == 1 {
+                    match sample.device {
+                        Some(_) => {}
+                        None => {
+                            sample.device = Some(device_set.one_device(&cfg));
+                        }
+                    }
+                }
                 if device_set.threshold_reached(&cfg, last_avg) {
                     println!("Power below {}W", { device_set.threshold });
                     if cfg.power_off_under_threshold {
@@ -82,7 +90,7 @@ async fn main() -> std::io::Result<()> {
             Err(error) => panic!("Problem opening {} {:?}", config_path.display(), error),
         }
     } else {
-        match confy::load("llcharge") {
+        match confy::load("llcharge", None) {
             Ok(c) => c,
             Err(error) => panic!("Problem opening the file: {:?}", error),
         }
